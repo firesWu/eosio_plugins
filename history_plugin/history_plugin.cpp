@@ -377,7 +377,11 @@ namespace eosio {
    }
 
    void history_plugin::plugin_startup() {
-      if( my->snapshot ) my->init_history_database(const_cast<chainbase::database&>(my->chain_plug->chain().db()));
+      if( my->snapshot ) {
+         ilog(" init history state begin.");
+         my->init_history_database(const_cast<chainbase::database&>(my->chain_plug->chain().db()));
+         ilog(" init history state end.");
+      }
    }
 
    void history_plugin::plugin_shutdown() {
