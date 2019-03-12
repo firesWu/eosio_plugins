@@ -118,6 +118,7 @@ namespace eosio {
             obj.controlled_account = account_name;
             obj.controlled_permission = permission;
             obj.controlling_account = controlling_account.permission.actor;
+            obj.controlling_permission = controlling_account.permission.permission;
          });
       }
    }
@@ -296,8 +297,12 @@ namespace eosio {
             auto& idx = db.get_index<permission_index, by_id>();
             for( auto itr = idx.begin(); itr != idx.end(); itr++){
                auto auth = itr->auth.to_authority();
-               add(db, auth.keys, itr->owner, itr->name);
-               add(db, auth.accounts, itr->owner, itr->name);
+               try{
+                  add(db, auth.keys, itr->owner, itr->name);
+                  add(db, auth.accounts, itr->owner, itr->name);
+               } catch(std::exception e) {
+                  elog("details ${e} : ${auth}",("e",e.what())("auth",*itr));
+               }
             }
          }
    };
